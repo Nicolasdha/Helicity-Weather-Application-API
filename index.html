@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helicity Weather</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="shortcut icon" href="#">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+
+<!-- Helicity Weather Application -->
+<body>
+
+<!-- Current date and location section -->
+    <div class="container">
+            <div class=" row location" id="location">
+                <div class="col-12 col-sm-8 text-center">
+                    <h3 class="location__date"> </h3>
+                    <h1 class="location__timezone"></h1>
+                </div>
+                <div class="col-12 col-sm-2 text-center">
+                    <canvas class="icon" id="currentIcon" width="128" height="128"></canvas>
+                </div>
+            </div>
+            <div class="temperature">
+                <div class="row temperature__degree text-center">
+                    <h2 class="col-12 col-sm-11 temperature__degree temperature__degree--digits "></h2>
+                    <span class="temperature__degree temperature__degree--letter"></span>
+                </div>
+            </div>
+    </div>
+
+<!-- Current date weather cards -->
+<div class="container weather__cards">
+
+    <!-- High/Low temperature card -->
+    <div class="row weather__cards__row--1 ">
+        <div class="col-8 col-md-11 weather__card">
+            <canvas id="highLow" width="128" height="128"></canvas>
+            <div id="high__low__card"></div>
+        </div>
+    </div>
+        <!-- Cloud cover card  -->
+    <div class="row weather__cards__row--1 ">
+        <div class="col-8 col-md-4  weather__card">
+        <canvas id="cloudy" width="128" height="128"></canvas>
+        <div id="cloudCover__card"></div>
+    </div>
+    <!-- Wind/gust speed card  -->
+        <div class="col-8 col-md-4 weather__card">
+            <canvas id="wind" width="128" height="128"></canvas>
+            <div id="windSpeed__card"></div>
+        </div>
+    </div>
+    <!-- Precipitation card -->
+    <div class="row weather__cards__row--2">
+        <div class="col-8 col-md-6 weather__card">
+            <canvas id="precip" width="128" height="128"></canvas>
+            <div id="precipProbability__card"></div>
+        </div>
+    <!-- Humidity card -->
+        <div class="col-8 col-md-3  weather__card text-center">
+            <canvas id="humid" width="128" height="128"></canvas>
+            <div id="humidity__card"></div>
+        </div>
+    </div>
+    
+
+
+    <!-- Weekly cards -->
+        <div class="row weather__cards__row--3">
+            <div class="col-8 col-lg-3 weather__card weather__card-weekly">
+                <canvas id="weekly1Canvas" width="128" height="128"></canvas>
+                <div id="weekly1"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly2Canvas" width="128" height="128"></canvas>
+                <div id="weekly2"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly3Canvas" width="128" height="128"></canvas>
+                <div id="weekly3"></div>
+            </div>
+        </div>
+          
+        <div class="row weather__cards__row--4 ">
+            <div class="col-8 col-lg-3 weather__card weather__card-weekly">
+                <canvas id="weekly4Canvas" width="128" height="128"></canvas>
+                <div id="weekly4"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly5Canvas" width="128" height="128"></canvas>
+                <div id="weekly5"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly6Canvas" width="128" height="128"></canvas>
+                <div id="weekly6"></div>
+            </div>
+        </div>
+    </div>
+<!-- Scripts     -->
+    <script src="/scripts.js"></script>
+    <script src="/skycons.js"></script>
+</body>
+</html>

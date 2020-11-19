@@ -1,0 +1,150 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(112deg, rgba(46,150,163,1) 0%, rgba(48,62,143,1) 83%);
+    background-color: rgb(48,62,143);
+    background-repeat: no-repeat;
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+}
+
+.icon {
+    height: 115%;
+    padding-bottom: 20px;
+}
+
+.location {
+    margin: 70px 40px 70px 40px;
+}
+
+.location__timezone {
+    font-size: 5rem;
+    margin-top: 40px;
+    text-align:center;
+}
+
+.location__date {
+    font-size: 2.5rem;
+    margin-left: -30px;
+}
+
+.weather__card {
+    padding: 20px;
+    min-height: 250px;
+    border: 5px solid rgb(255, 255, 255);
+    margin: 20px auto ;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 3px 3px rgba(255, 255, 255, 0.112)
+}
+
+.weather__card-weekly {
+    min-height: 350px;
+    border: 5px solid rgb(255, 255, 255);
+    font-size: 1.2rem;
+}
+
+.weather__card-weekly p{
+    background: rgba(255, 255, 255, 0.267);
+    border-radius: 10px;
+    text-align: center;
+    padding: 20px 15px;
+    margin-top: 25px;
+}
+
+.weather__card-weekly span{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+.card {
+    background: transparent;
+}
+
+#precipProbability__card, #humidity__card, #windSpeed__card, #cloudCover__card, #high__low__card {
+    background: rgba(255, 255, 255, 0.267);
+    border-radius: 10px;
+    font-size: 1.2rem;
+    padding: 15px 5px 15px 5px;
+}
+
+.click {
+    cursor: pointer;
+}
+
+@media screen and (min-width: 992px) and (max-width:1200px)  {
+    .icon {
+        height: 100%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -100px;
+        font-size:2.3rem; 
+    }
+}
+@media screen and (min-width: 768px) and (max-width:992px)  {
+    .icon {
+        height: 90%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -81px;
+        font-size:1.9rem; 
+    }
+
+    .location__timezone {
+        font-size: 4rem;
+    }
+
+    .location {
+        margin: 70px 40px 40px 40px;
+    }
+}
+
+
+@media screen and (min-width: 576px) and (max-width: 768px)  {
+    .icon {
+        height: 80%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -80px;
+        font-size: 1.9rem; 
+    }
+
+    .location__timezone {
+        font-size: 3.1rem;
+    }
+
+    .location {
+        margin: 70px 40px 10px 40px;
+    }
+}
+
+
+
+@media screen and (min-width: 1px) and (max-width: 576px)  {
+    .icon {
+        height: 80%;
+        margin-top: 10px;
+    }
+
+    .location__date {
+        font-size:2.1rem; 
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .location__timezone {
+        font-size: 3.5rem;
+    }
+
+    .location {
+        margin: 40px 40px 0 40px;
+    }
+}
