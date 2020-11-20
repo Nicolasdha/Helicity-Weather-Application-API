@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />  
+    <title>Helicity Weather</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="shortcut icon" href="#">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(112deg, rgba(46,150,163,1) 0%, rgba(48,62,143,1) 83%);
+    background-color: rgb(48,62,143);
+    background-repeat: no-repeat;
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+}
+
+.icon {
+    height: 115%;
+    padding-bottom: 20px;
+}
+
+.location {
+    margin: 70px 40px 70px 40px;
+}
+
+.location__timezone {
+    font-size: 5rem;
+    margin-top: 40px;
+    text-align:center;
+}
+
+.location__date {
+    font-size: 2.5rem;
+    margin-left: -30px;
+}
+
+.weather__card {
+    padding: 20px;
+    min-height: 250px;
+    border: 5px solid rgb(255, 255, 255);
+    margin: 20px auto ;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 3px 3px rgba(255, 255, 255, 0.112)
+}
+
+.weather__card-weekly {
+    min-height: 350px;
+    border: 5px solid rgb(255, 255, 255);
+    font-size: 1.2rem;
+}
+
+.weather__card-weekly p{
+    background: rgba(255, 255, 255, 0.267);
+    border-radius: 10px;
+    text-align: center;
+    padding: 20px 15px;
+    margin-top: 25px;
+}
+
+.weather__card-weekly span{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+.card {
+    background: transparent;
+}
+
+#precipProbability__card, #humidity__card, #windSpeed__card, #cloudCover__card, #high__low__card {
+    background: rgba(255, 255, 255, 0.267);
+    border-radius: 10px;
+    font-size: 1.2rem;
+    padding: 15px 5px 15px 5px;
+}
+
+.click {
+    cursor: pointer;
+}
+
+@media screen and (min-width: 992px) and (max-width:1200px)  {
+    .icon {
+        height: 100%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -100px;
+        font-size:2.3rem; 
+    }
+}
+@media screen and (min-width: 768px) and (max-width:992px)  {
+    .icon {
+        height: 90%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -81px;
+        font-size:1.9rem; 
+    }
+
+    .location__timezone {
+        font-size: 4rem;
+    }
+
+    .location {
+        margin: 70px 40px 40px 40px;
+    }
+}
+
+
+@media screen and (min-width: 576px) and (max-width: 768px)  {
+    .icon {
+        height: 80%;
+        margin-top: 30px;
+    }
+
+    .location__date {
+        margin-left: -80px;
+        font-size: 1.9rem; 
+    }
+
+    .location__timezone {
+        font-size: 3.1rem;
+    }
+
+    .location {
+        margin: 70px 40px 10px 40px;
+    }
+}
+
+
+
+@media screen and (min-width: 1px) and (max-width: 576px)  {
+    .icon {
+        height: 80%;
+        margin-top: 10px;
+    }
+
+    .location__date {
+        font-size:2.1rem; 
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .location__timezone {
+        font-size: 3.5rem;
+    }
+
+    .location {
+        margin: 40px 40px 0 40px;
+    }
+}
+</style>
+
+<!-- Helicity Weather Application -->
+<body>
+
+<!-- Current date and location section -->
+    <div class="container">
+            <div class=" row location" id="location">
+                <div class="col-12 col-sm-8 text-center">
+                    <h3 class="location__date"> </h3>
+                    <h1 class="location__timezone"></h1>
+                </div>
+                <div class="col-12 col-sm-2 text-center">
+                    <canvas class="icon" id="currentIcon" width="128" height="128"></canvas>
+                </div>
+            </div>
+            <div class="temperature">
+                <div class="row temperature__degree text-center">
+                    <h2 class="col-12 col-sm-11 temperature__degree temperature__degree--digits "></h2>
+                    <span class="temperature__degree temperature__degree--letter"></span>
+                </div>
+            </div>
+    </div>
+
+<!-- Current date weather cards -->
+<div class="container weather__cards">
+
+    <!-- High/Low temperature card -->
+    <div class="row weather__cards__row--1 ">
+        <div class="col-8 col-md-11 weather__card">
+            <canvas id="highLow" width="128" height="128"></canvas>
+            <div id="high__low__card"></div>
+        </div>
+    </div>
+        <!-- Cloud cover card  -->
+    <div class="row weather__cards__row--1 ">
+        <div class="col-8 col-md-4  weather__card">
+        <canvas id="cloudy" width="128" height="128"></canvas>
+        <div id="cloudCover__card"></div>
+    </div>
+    <!-- Wind/gust speed card  -->
+        <div class="col-8 col-md-4 weather__card">
+            <canvas id="wind" width="128" height="128"></canvas>
+            <div id="windSpeed__card"></div>
+        </div>
+    </div>
+    <!-- Precipitation card -->
+    <div class="row weather__cards__row--2">
+        <div class="col-8 col-md-6 weather__card">
+            <canvas id="precip" width="128" height="128"></canvas>
+            <div id="precipProbability__card"></div>
+        </div>
+    <!-- Humidity card -->
+        <div class="col-8 col-md-3  weather__card text-center">
+            <canvas id="humid" width="128" height="128"></canvas>
+            <div id="humidity__card"></div>
+        </div>
+    </div>
+    
+
+
+    <!-- Weekly cards -->
+        <div class="row weather__cards__row--3">
+            <div class="col-8 col-lg-3 weather__card weather__card-weekly">
+                <canvas id="weekly1Canvas" width="128" height="128"></canvas>
+                <div id="weekly1"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly2Canvas" width="128" height="128"></canvas>
+                <div id="weekly2"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly3Canvas" width="128" height="128"></canvas>
+                <div id="weekly3"></div>
+            </div>
+        </div>
+          
+        <div class="row weather__cards__row--4 ">
+            <div class="col-8 col-lg-3 weather__card weather__card-weekly">
+                <canvas id="weekly4Canvas" width="128" height="128"></canvas>
+                <div id="weekly4"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly5Canvas" width="128" height="128"></canvas>
+                <div id="weekly5"></div>
+            </div>
+            <div class="col-8 col-lg-3  weather__card text-center weather__card-weekly">
+                <canvas id="weekly6Canvas" width="128" height="128"></canvas>
+                <div id="weekly6"></div>
+            </div>
+        </div>
+    </div>
+<!-- Scripts     -->
+    <script>
+
+// Load local weather information upon window load
+window.addEventListener('load', ()=> {
+
+
+let long;
+let lat;
+let marker = false;
+const temperatureDegreeDigits = document.querySelector('.temperature__degree--digits')
+const locationTimezone = document.querySelector('.location__timezone')
+const locationDate = document.querySelector('.location__date')
+const precipProbability__card = document.querySelector('#precipProbability__card')
+const humidity__card = document.querySelector('#humidity__card')
+const windSpeed__card = document.querySelector('#windSpeed__card')
+const cloudCover__card = document.querySelector('#cloudCover__card')
+const high__low__card = document.querySelector('#high__low__card')
+const weekly_1_card = document.querySelector("#weekly1")
+const weekly_2_card = document.querySelector("#weekly2")
+const weekly_3_card = document.querySelector("#weekly3")
+const weekly_4_card = document.querySelector("#weekly4")
+const weekly_5_card = document.querySelector("#weekly5")
+const weekly_6_card = document.querySelector("#weekly6")
+const dayArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+const monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+
+if(navigator.geolocation){
+
+    // Get current position for API
+    navigator.geolocation.getCurrentPosition(position => {
+        long = position.coords.longitude;
+        lat = position.coords.latitude;
+
+        // Personal Heroku hosted proxy to make as many proxy requests as needed without getting locked out
+        const proxy = 'https://fierce-stream-08080.herokuapp.com/';
+        const api =`${proxy}https://api.darksky.net/forecast/fd9d9c6418c23d94745b836767721ad1/${lat},${long}`;
+      
+        fetch(api)
+        .then(response => response.json())
+        
+        .then(data => {
+
+            // Current conditions of Day0
+            let {temperature, summary, icon, precipProbability, humidity, windSpeed, cloudCover, windGust, time} = data.currently; 
+            let precipSummary = data.daily.summary 
+            let currentHigh = data.daily.data[0].temperatureHigh
+            let currentLow = data.daily.data[0].temperatureLow
+
+           
+            // Set DOM Elements from the API
+            temperatureDegreeDigits.innerHTML =`<span class="click">Current Temperature: ${Math.floor(temperature)}°F ${summary}</span>`
+
+            precipProbability__card.innerHTML = `Precipitation Probability: ${precipProbability}% <br>${precipSummary}`
+
+            humidity__card.textContent = `Humidity: ${Math.floor(humidity*100)}%`;
+
+            windSpeed__card.innerHTML = `Wind Speed: ${windSpeed} mph <br> Wind Gust: ${windGust}  mph`;
+
+            cloudCover__card.textContent = `Cloud cover: ${Math.floor(cloudCover*100)}%`;
+
+            high__low__card.innerHTML = `Today's high: ${currentHigh}°F<br> Today's low: ${currentLow}°F`;
+
+            // Regex to take America out of the location's name
+            let timeZone= data.timezone.replace(/(America\/)/, " ");
+
+
+            let epoch = data.daily.data[0].time;
+            let date = new Date(epoch * 1000);
+            let currentDateDay = date.getDay()
+            let currentDateMonth = date.getMonth()
+            let currentDateDate = date.getDate()
+            let currentDateYear = date.getFullYear()
+        
+
+            // Set DOM with current location and date of Day0
+            locationTimezone.textContent = timeZone
+            locationDate.textContent = `${dayArray[currentDateDay]},  ${monthArray[currentDateMonth]}   ${dateSuffix(currentDateDate)}  ${currentDateYear}`
+
+
+            // To set DOM elements of Day1 in weekly line-up
+            const temperatureHighDay1 = data.daily.data[1].temperatureHigh
+            const temperatureLowDay1 = data.daily.data[1].temperatureLow
+            const summaryDay1 = data.daily.data[1].summary
+            const iconDay1 = data.daily.data[1].icon
+            const precipProbabilityDay1 = data.daily.data[1].precipProbability*100
+            const windSpeedDay1 = data.daily.data[1].windSpeed
+            const cloudCoverDay1 = data.daily.data[1].cloudCover*100
+            const windGustDay1 = data.daily.data[1].windGust
+            const timeDay1 = data.daily.data[1].time
+
+            epoch = timeDay1;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+
+            weekly_1_card.innerHTML = 
+            `<p>
+                <span>
+                    ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay1}°F<br>Low: ${temperatureLowDay1}°F
+                    <br><br>
+                ${summaryDay1}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay1)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay1)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay1} mph<br>Wind Gust: ${windGustDay1} mph
+            </p>`
+
+
+            // To set DOM elements of Day2 in weekly line-up
+            const temperatureHighDay2 = data.daily.data[2].temperatureHigh
+            const temperatureLowDay2 = data.daily.data[2].temperatureLow
+            const summaryDay2 = data.daily.data[2].summary
+            const iconDay2 = data.daily.data[2].icon
+            const precipProbabilityDay2 = data.daily.data[2].precipProbability*100
+            const windSpeedDay2 = data.daily.data[2].windSpeed
+            const cloudCoverDay2 = data.daily.data[2].cloudCover*100
+            const windGustDay2 = data.daily.data[2].windGust
+            const timeDay2 = data.daily.data[2].time
+
+            epoch = timeDay2;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+          
+            weekly_2_card.innerHTML = 
+            `<p>
+                <span>
+                    ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay2}°F<br>Low: ${temperatureLowDay2}°F
+                    <br><br>
+                ${summaryDay2}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay2)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay2)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay2} mph<br>Wind Gust: ${windGustDay2} mph
+            </p>`
+
+
+            // To set DOM elements of Day3 in weekly line-up
+            const temperatureHighDay3 = data.daily.data[3].temperatureHigh
+            const temperatureLowDay3 = data.daily.data[3].temperatureLow
+            const summaryDay3 = data.daily.data[3].summary
+            const iconDay3 = data.daily.data[3].icon
+            const precipProbabilityDay3 = data.daily.data[3].precipProbability*100
+            const windSpeedDay3 = data.daily.data[3].windSpeed
+            const cloudCoverDay3 = data.daily.data[3].cloudCover*100
+            const windGustDay3 = data.daily.data[3].windGust
+            const timeDay3 = data.daily.data[3].time
+
+            epoch = timeDay3;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+          
+            weekly_3_card.innerHTML = 
+            `<p>
+                <span>
+                    ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay3}°F<br>Low: ${temperatureLowDay3}°F
+                    <br><br>
+                ${summaryDay3}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay3)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay3)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay3}<br>Wind Gust: ${windGustDay3} mph
+            </p>`
+
+            // To set DOM elements of Day4 in weekly line-up
+            const temperatureHighDay4 = data.daily.data[4].temperatureHigh
+            const temperatureLowDay4 = data.daily.data[4].temperatureLow
+            const summaryDay4 = data.daily.data[4].summary
+            const iconDay4 = data.daily.data[4].icon
+            const precipProbabilityDay4 = data.daily.data[4].precipProbability*100
+            const windSpeedDay4 = data.daily.data[4].windSpeed
+            const cloudCoverDay4 = data.daily.data[4].cloudCover*100
+            const windGustDay4 = data.daily.data[4].windGust
+            const timeDay4 = data.daily.data[4].time
+
+            epoch = timeDay4;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+
+            weekly_4_card.innerHTML = 
+            `<p>
+                <span>
+                ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay4}°F<br>Low: ${temperatureLowDay4}°F
+                    <br><br>
+                ${summaryDay4}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay4)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay4)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay4} mph<br>Wind Gust: ${windGustDay4} mph
+            </p>`
+
+            // To set DOM elements of Day5 in weekly line-up
+            const temperatureHighDay5 = data.daily.data[5].temperatureHigh
+            const temperatureLowDay5 = data.daily.data[5].temperatureLow
+            const summaryDay5 = data.daily.data[5].summary
+            const iconDay5 = data.daily.data[5].icon
+            const precipProbabilityDay5 = data.daily.data[5].precipProbability*100
+            const windSpeedDay5 = data.daily.data[5].windSpeed
+            const cloudCoverDay5 = data.daily.data[5].cloudCover*100
+            const windGustDay5 = data.daily.data[5].windGust
+            const timeDay5 = data.daily.data[5].time
+
+            epoch = timeDay5;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+          
+            weekly_5_card.innerHTML = 
+            `<p>
+                <span>
+                    ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay5}°F
+                    <br>
+                Low: ${temperatureLowDay5}°F
+                    <br><br>
+                ${summaryDay5}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay5)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay5)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay5} mph<br> Wind Gust: ${windGustDay5} mph
+            </p>`
+
+            // To set DOM elements of Day6 in weekly line-up
+            const temperatureHighDay6 = data.daily.data[6].temperatureHigh
+            const temperatureLowDay6 = data.daily.data[6].temperatureLow
+            const summaryDay6 = data.daily.data[6].summary
+            const iconDay6 = data.daily.data[6].icon
+            const precipProbabilityDay6 = data.daily.data[6].precipProbability*100
+            const windSpeedDay6 = data.daily.data[6].windSpeed
+            const cloudCoverDay6 = data.daily.data[6].cloudCover*100
+            const windGustDay6 = data.daily.data[6].windGust
+            const timeDay6 = data.daily.data[6].time
+
+            epoch = timeDay6;
+            date = new Date(epoch * 1000);
+            currentDateDay = date.getDay()
+            currentDateMonth = date.getMonth()
+            currentDateDate = date.getDate()
+            currentDateYear = date.getFullYear()
+          
+            weekly_6_card.innerHTML = 
+            `<p>
+                <span>
+                    ${dayArray[currentDateDay]}, ${monthArray[currentDateMonth]} ${dateSuffix(currentDateDate)} ${currentDateYear}
+                </span>
+                    <br><br>
+                High: ${temperatureHighDay6}°F<br>Low: ${temperatureLowDay6}°F
+                    <br><br>
+                ${summaryDay6}
+                    <br><br>
+                Precipitation Probability: ${Math.floor(precipProbabilityDay6)}%
+                    <br><br>
+                Cloud Cover: ${Math.floor(cloudCoverDay6)}%
+                    <br><br>
+                Wind Speed: ${windSpeedDay6} mph<br>Wind Gust: ${windGustDay6} mph
+            </p>`
+
+            // Set Skycon for each container
+            const skycon = new Skycons({"color": 'rgb(13, 0, 189)'});
+            skycon.add("currentIcon", Skycons[icon.replace(/-/g,"_").toUpperCase()]);
+            skycon.play()
+            const skyconWhite = new Skycons({"color": "white"});
+            skyconWhite.add("precip", Skycons.RAIN);
+            skyconWhite.add("wind", Skycons.WIND);
+            skyconWhite.add("humid", Skycons.FOG);
+            skyconWhite.add("cloudy", Skycons.CLOUDY);
+            skyconWhite.add("highLow", Skycons.CLEAR_DAY);
+            skyconWhite.set("weekly1Canvas",  Skycons[iconDay1.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.set("weekly2Canvas",  Skycons[iconDay2.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.set("weekly3Canvas",  Skycons[iconDay3.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.set("weekly4Canvas",  Skycons[iconDay4.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.set("weekly5Canvas",  Skycons[iconDay5.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.set("weekly6Canvas",  Skycons[iconDay6.replace(/-/g,"_").toUpperCase()]);
+            skyconWhite.play();
+
+            // Event listener for clicking on current temperature to change to °F/°C
+            temperatureDegreeDigits.addEventListener('click', toCelsius);
+
+            // Function to change current temperature to °F/°C
+            function toCelsius() {
+                if (marker === true) {
+                    temperature = Math.floor((temperature * 9/5) + 32);
+                    temperatureDegreeDigits.textContent =  'Current temperature: ' + temperature + '°F  ' + summary
+                    marker = false;
+                } else if (marker === false) {
+                    temperature = Math.floor((temperature - 32) * (5/9));
+                    temperatureDegreeDigits.textContent = 'Current temperature: ' + temperature + '°C  ' + summary
+                    marker = true;
+                }
+            }
+        });
+    });
+} 
+});
+
+
+// Function to format the suffix for each date
+function dateSuffix(date){
+if(date == 1 || date == 21 || date == 31){
+    date = date +"st"
+}else if(date ==2 ||date == 22 ){
+    date = date+"nd"
+}else if(date ==3 || date ==  23){
+date = date +"rd"
+}else {
+    date = date +"th"
+}
+return date
+}
+
+(function(global) {
+  "use strict";
+
+
+  var requestInterval, cancelInterval;
+
+  (function() {
+    var raf = global.requestAnimationFrame       ||
+              global.webkitRequestAnimationFrame ||
+              global.mozRequestAnimationFrame    ||
+              global.oRequestAnimationFrame      ||
+              global.msRequestAnimationFrame     ,
+        caf = global.cancelAnimationFrame        ||
+              global.webkitCancelAnimationFrame  ||
+              global.mozCancelAnimationFrame     ||
+              global.oCancelAnimationFrame       ||
+              global.msCancelAnimationFrame      ;
+
+    if(raf && caf) {
+      requestInterval = function(fn) {
+        var handle = {value: null};
+
+        function loop() {
+          handle.value = raf(loop);
+          fn();
+        }
+
+        loop();
+        return handle;
+      };
+
+      cancelInterval = function(handle) {
+        caf(handle.value);
+      };
+    }
+
+    else {
+      requestInterval = setInterval;
+      cancelInterval = clearInterval;
+    }
+  }());
+
+  var KEYFRAME = 500,
+      STROKE = 0.08,
+      TAU = 2.0 * Math.PI,
+      TWO_OVER_SQRT_2 = 2.0 / Math.sqrt(2);
+
+  function circle(ctx, x, y, r) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, TAU, false);
+    ctx.fill();
+  }
+
+  function line(ctx, ax, ay, bx, by) {
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  }
+
+  function puff(ctx, t, cx, cy, rx, ry, rmin, rmax) {
+    var c = Math.cos(t * TAU),
+        s = Math.sin(t * TAU);
+
+    rmax -= rmin;
+
+    circle(
+      ctx,
+      cx - s * rx,
+      cy + c * ry + rmax * 0.5,
+      rmin + (1 - c * 0.5) * rmax
+    );
+  }
+
+  function puffs(ctx, t, cx, cy, rx, ry, rmin, rmax) {
+    var i;
+
+    for(i = 5; i--; )
+      puff(ctx, t + i / 5, cx, cy, rx, ry, rmin, rmax);
+  }
+
+  function cloud(ctx, t, cx, cy, cw, s, color) {
+    t /= 30000;
+
+    var a = cw * 0.21,
+        b = cw * 0.12,
+        c = cw * 0.24,
+        d = cw * 0.28;
+
+    ctx.fillStyle = color;
+    puffs(ctx, t, cx, cy, a, b, c, d);
+
+    ctx.globalCompositeOperation = 'destination-out';
+    puffs(ctx, t, cx, cy, a, b, c - s, d - s);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function sun(ctx, t, cx, cy, cw, s, color) {
+    t /= 120000;
+
+    var a = cw * 0.25 - s * 0.5,
+        b = cw * 0.32 + s * 0.5,
+        c = cw * 0.50 - s * 0.5,
+        i, p, cos, sin;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, a, 0, TAU, false);
+    ctx.stroke();
+
+    for(i = 8; i--; ) {
+      p = (t + i / 8) * TAU;
+      cos = Math.cos(p);
+      sin = Math.sin(p);
+      line(ctx, cx + cos * b, cy + sin * b, cx + cos * c, cy + sin * c);
+    }
+  }
+
+  function moon(ctx, t, cx, cy, cw, s, color) {
+    t /= 15000;
+
+    var a = cw * 0.29 - s * 0.5,
+        b = cw * 0.05,
+        c = Math.cos(t * TAU),
+        p = c * TAU / -16;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    cx += c * b;
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, a, p + TAU / 8, p + TAU * 7 / 8, false);
+    ctx.arc(cx + Math.cos(p) * a * TWO_OVER_SQRT_2, cy + Math.sin(p) * a * TWO_OVER_SQRT_2, a, p + TAU * 5 / 8, p + TAU * 3 / 8, true);
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  function rain(ctx, t, cx, cy, cw, s, color) {
+    t /= 1350;
+
+    var a = cw * 0.16,
+        b = TAU * 11 / 12,
+        c = TAU *  7 / 12,
+        i, p, x, y;
+
+    ctx.fillStyle = color;
+
+    for(i = 4; i--; ) {
+      p = (t + i / 4) % 1;
+      x = cx + ((i - 1.5) / 1.5) * (i === 1 || i === 2 ? -1 : 1) * a;
+      y = cy + p * p * cw;
+      ctx.beginPath();
+      ctx.moveTo(x, y - s * 1.5);
+      ctx.arc(x, y, s * 0.75, b, c, false);
+      ctx.fill();
+    }
+  }
+
+  function sleet(ctx, t, cx, cy, cw, s, color) {
+    t /= 750;
+
+    var a = cw * 0.1875,
+        i, p, x, y;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s * 0.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    for(i = 4; i--; ) {
+      p = (t + i / 4) % 1;
+      x = Math.floor(cx + ((i - 1.5) / 1.5) * (i === 1 || i === 2 ? -1 : 1) * a) + 0.5;
+      y = cy + p * cw;
+      line(ctx, x, y - s * 1.5, x, y + s * 1.5);
+    }
+  }
+
+  function snow(ctx, t, cx, cy, cw, s, color) {
+    t /= 3000;
+
+    var a  = cw * 0.16,
+        b  = s * 0.75,
+        u  = t * TAU * 0.7,
+        ux = Math.cos(u) * b,
+        uy = Math.sin(u) * b,
+        v  = u + TAU / 3,
+        vx = Math.cos(v) * b,
+        vy = Math.sin(v) * b,
+        w  = u + TAU * 2 / 3,
+        wx = Math.cos(w) * b,
+        wy = Math.sin(w) * b,
+        i, p, x, y;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s * 0.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    for(i = 4; i--; ) {
+      p = (t + i / 4) % 1;
+      x = cx + Math.sin((p + i / 4) * TAU) * a;
+      y = cy + p * cw;
+
+      line(ctx, x - ux, y - uy, x + ux, y + uy);
+      line(ctx, x - vx, y - vy, x + vx, y + vy);
+      line(ctx, x - wx, y - wy, x + wx, y + wy);
+    }
+  }
+
+  function fogbank(ctx, t, cx, cy, cw, s, color) {
+    t /= 30000;
+
+    var a = cw * 0.21,
+        b = cw * 0.06,
+        c = cw * 0.21,
+        d = cw * 0.28;
+
+    ctx.fillStyle = color;
+    puffs(ctx, t, cx, cy, a, b, c, d);
+
+    ctx.globalCompositeOperation = 'destination-out';
+    puffs(ctx, t, cx, cy, a, b, c - s, d - s);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+
+  var WIND_PATHS = [
+        [
+          -0.7500, -0.1800, -0.7219, -0.1527, -0.6971, -0.1225,
+          -0.6739, -0.0910, -0.6516, -0.0588, -0.6298, -0.0262,
+          -0.6083,  0.0065, -0.5868,  0.0396, -0.5643,  0.0731,
+          -0.5372,  0.1041, -0.5033,  0.1259, -0.4662,  0.1406,
+          -0.4275,  0.1493, -0.3881,  0.1530, -0.3487,  0.1526,
+          -0.3095,  0.1488, -0.2708,  0.1421, -0.2319,  0.1342,
+          -0.1943,  0.1217, -0.1600,  0.1025, -0.1290,  0.0785,
+          -0.1012,  0.0509, -0.0764,  0.0206, -0.0547, -0.0120,
+          -0.0378, -0.0472, -0.0324, -0.0857, -0.0389, -0.1241,
+          -0.0546, -0.1599, -0.0814, -0.1876, -0.1193, -0.1964,
+          -0.1582, -0.1935, -0.1931, -0.1769, -0.2157, -0.1453,
+          -0.2290, -0.1085, -0.2327, -0.0697, -0.2240, -0.0317,
+          -0.2064,  0.0033, -0.1853,  0.0362, -0.1613,  0.0672,
+          -0.1350,  0.0961, -0.1051,  0.1213, -0.0706,  0.1397,
+          -0.0332,  0.1512,  0.0053,  0.1580,  0.0442,  0.1624,
+           0.0833,  0.1636,  0.1224,  0.1615,  0.1613,  0.1565,
+           0.1999,  0.1500,  0.2378,  0.1402,  0.2749,  0.1279,
+           0.3118,  0.1147,  0.3487,  0.1015,  0.3858,  0.0892,
+           0.4236,  0.0787,  0.4621,  0.0715,  0.5012,  0.0702,
+           0.5398,  0.0766,  0.5768,  0.0890,  0.6123,  0.1055,
+           0.6466,  0.1244,  0.6805,  0.1440,  0.7147,  0.1630,
+           0.7500,  0.1800
+        ],
+        [
+          -0.7500,  0.0000, -0.7033,  0.0195, -0.6569,  0.0399,
+          -0.6104,  0.0600, -0.5634,  0.0789, -0.5155,  0.0954,
+          -0.4667,  0.1089, -0.4174,  0.1206, -0.3676,  0.1299,
+          -0.3174,  0.1365, -0.2669,  0.1398, -0.2162,  0.1391,
+          -0.1658,  0.1347, -0.1157,  0.1271, -0.0661,  0.1169,
+          -0.0170,  0.1046,  0.0316,  0.0903,  0.0791,  0.0728,
+           0.1259,  0.0534,  0.1723,  0.0331,  0.2188,  0.0129,
+           0.2656, -0.0064,  0.3122, -0.0263,  0.3586, -0.0466,
+           0.4052, -0.0665,  0.4525, -0.0847,  0.5007, -0.1002,
+           0.5497, -0.1130,  0.5991, -0.1240,  0.6491, -0.1325,
+           0.6994, -0.1380,  0.7500, -0.1400
+        ]
+      ],
+      WIND_OFFSETS = [
+        {start: 0.36, end: 0.11},
+        {start: 0.56, end: 0.16}
+      ];
+
+  function leaf(ctx, t, x, y, cw, s, color) {
+    var a = cw / 8,
+        b = a / 3,
+        c = 2 * b,
+        d = (t % 1) * TAU,
+        e = Math.cos(d),
+        f = Math.sin(d);
+
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.arc(x        , y        , a, d          , d + Math.PI, false);
+    ctx.arc(x - b * e, y - b * f, c, d + Math.PI, d          , false);
+    ctx.arc(x + c * e, y + c * f, b, d + Math.PI, d          , true );
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.stroke();
+  }
+
+  function swoosh(ctx, t, cx, cy, cw, s, index, total, color) {
+    t /= 2500;
+
+    var path = WIND_PATHS[index],
+        a = (t + index - WIND_OFFSETS[index].start) % total,
+        c = (t + index - WIND_OFFSETS[index].end  ) % total,
+        e = (t + index                            ) % total,
+        b, d, f, i;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = s;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if(a < 1) {
+      ctx.beginPath();
+
+      a *= path.length / 2 - 1;
+      b  = Math.floor(a);
+      a -= b;
+      b *= 2;
+      b += 2;
+
+      ctx.moveTo(
+        cx + (path[b - 2] * (1 - a) + path[b    ] * a) * cw,
+        cy + (path[b - 1] * (1 - a) + path[b + 1] * a) * cw
+      );
+
+      if(c < 1) {
+        c *= path.length / 2 - 1;
+        d  = Math.floor(c);
+        c -= d;
+        d *= 2;
+        d += 2;
+
+        for(i = b; i !== d; i += 2)
+          ctx.lineTo(cx + path[i] * cw, cy + path[i + 1] * cw);
+
+        ctx.lineTo(
+          cx + (path[d - 2] * (1 - c) + path[d    ] * c) * cw,
+          cy + (path[d - 1] * (1 - c) + path[d + 1] * c) * cw
+        );
+      }
+
+      else
+        for(i = b; i !== path.length; i += 2)
+          ctx.lineTo(cx + path[i] * cw, cy + path[i + 1] * cw);
+
+      ctx.stroke();
+    }
+
+    else if(c < 1) {
+      ctx.beginPath();
+
+      c *= path.length / 2 - 1;
+      d  = Math.floor(c);
+      c -= d;
+      d *= 2;
+      d += 2;
+
+      ctx.moveTo(cx + path[0] * cw, cy + path[1] * cw);
+
+      for(i = 2; i !== d; i += 2)
+        ctx.lineTo(cx + path[i] * cw, cy + path[i + 1] * cw);
+
+      ctx.lineTo(
+        cx + (path[d - 2] * (1 - c) + path[d    ] * c) * cw,
+        cy + (path[d - 1] * (1 - c) + path[d + 1] * c) * cw
+      );
+
+      ctx.stroke();
+    }
+
+    if(e < 1) {
+      e *= path.length / 2 - 1;
+      f  = Math.floor(e);
+      e -= f;
+      f *= 2;
+      f += 2;
+
+      leaf(
+        ctx,
+        t,
+        cx + (path[f - 2] * (1 - e) + path[f    ] * e) * cw,
+        cy + (path[f - 1] * (1 - e) + path[f + 1] * e) * cw,
+        cw,
+        s,
+        color
+      );
+    }
+  }
+
+  var Skycons = function(opts) {
+        this.list        = [];
+        this.interval    = null;
+        this.color       = opts && opts.color ? opts.color : "black";
+        this.resizeClear = !!(opts && opts.resizeClear);
+      };
+
+  Skycons.CLEAR_DAY = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    sun(ctx, t, w * 0.5, h * 0.5, s, s * STROKE, color);
+  };
+
+  Skycons.CLEAR_NIGHT = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    moon(ctx, t, w * 0.5, h * 0.5, s, s * STROKE, color);
+  };
+
+  Skycons.PARTLY_CLOUDY_DAY = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    sun(ctx, t, w * 0.625, h * 0.375, s * 0.75, s * STROKE, color);
+    cloud(ctx, t, w * 0.375, h * 0.625, s * 0.75, s * STROKE, color);
+  };
+
+  Skycons.PARTLY_CLOUDY_NIGHT = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    moon(ctx, t, w * 0.667, h * 0.375, s * 0.75, s * STROKE, color);
+    cloud(ctx, t, w * 0.375, h * 0.625, s * 0.75, s * STROKE, color);
+  };
+
+  Skycons.CLOUDY = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    cloud(ctx, t, w * 0.5, h * 0.5, s, s * STROKE, color);
+  };
+
+  Skycons.RAIN = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    rain(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+    cloud(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+  };
+
+  Skycons.SLEET = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    sleet(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+    cloud(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+  };
+
+  Skycons.SNOW = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    snow(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+    cloud(ctx, t, w * 0.5, h * 0.37, s * 0.9, s * STROKE, color);
+  };
+
+  Skycons.WIND = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h);
+
+    swoosh(ctx, t, w * 0.5, h * 0.5, s, s * STROKE, 0, 2, color);
+    swoosh(ctx, t, w * 0.5, h * 0.5, s, s * STROKE, 1, 2, color);
+  };
+
+  Skycons.FOG = function(ctx, t, color) {
+    var w = ctx.canvas.width,
+        h = ctx.canvas.height,
+        s = Math.min(w, h),
+        k = s * STROKE;
+
+    fogbank(ctx, t, w * 0.5, h * 0.32, s * 0.75, k, color);
+
+    t /= 5000;
+
+    var a = Math.cos((t       ) * TAU) * s * 0.02,
+        b = Math.cos((t + 0.25) * TAU) * s * 0.02,
+        c = Math.cos((t + 0.50) * TAU) * s * 0.02,
+        d = Math.cos((t + 0.75) * TAU) * s * 0.02,
+        n = h * 0.936,
+        e = Math.floor(n - k * 0.5) + 0.5,
+        f = Math.floor(n - k * 2.5) + 0.5;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = k;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    line(ctx, a + w * 0.2 + k * 0.5, e, b + w * 0.8 - k * 0.5, e);
+    line(ctx, c + w * 0.2 + k * 0.5, f, d + w * 0.8 - k * 0.5, f);
+  };
+
+  Skycons.prototype = {
+    _determineDrawingFunction: function(draw) {
+      if(typeof draw === "string")
+        draw = Skycons[draw.toUpperCase().replace(/-/g, "_")] || null;
+
+      return draw;
+    },
+    add: function(el, draw) {
+      var obj;
+
+      if(typeof el === "string")
+        el = document.getElementById(el);
+
+      // Does nothing if canvas name doesn't exists
+      if(el === null || el === undefined)
+        return;
+
+      draw = this._determineDrawingFunction(draw);
+
+      // Does nothing if the draw function isn't actually a function
+      if(typeof draw !== "function")
+        return;
+
+      obj = {
+        element: el,
+        context: el.getContext("2d"),
+        drawing: draw
+      };
+
+      this.list.push(obj);
+      this.draw(obj, KEYFRAME);
+    },
+    set: function(el, draw) {
+      var i;
+
+      if(typeof el === "string")
+        el = document.getElementById(el);
+
+      for(i = this.list.length; i--; )
+        if(this.list[i].element === el) {
+          this.list[i].drawing = this._determineDrawingFunction(draw);
+          this.draw(this.list[i], KEYFRAME);
+          return;
+        }
+
+      this.add(el, draw);
+    },
+    remove: function(el) {
+      var i;
+
+      if(typeof el === "string")
+        el = document.getElementById(el);
+
+      for(i = this.list.length; i--; )
+        if(this.list[i].element === el) {
+          this.list.splice(i, 1);
+          return;
+        }
+    },
+    draw: function(obj, time) {
+      var canvas = obj.context.canvas;
+
+      if(this.resizeClear)
+        canvas.width = canvas.width;
+
+      else
+        obj.context.clearRect(0, 0, canvas.width, canvas.height);
+
+      obj.drawing(obj.context, time, this.color);
+    },
+    play: function() {
+      var self = this;
+
+      this.pause();
+      this.interval = requestInterval(function() {
+        var now = Date.now(),
+            i;
+
+        for(i = self.list.length; i--; )
+          self.draw(self.list[i], now);
+      }, 1000 / 60);
+    },
+    pause: function() {
+      if(this.interval) {
+        cancelInterval(this.interval);
+        this.interval = null;
+      }
+    }
+  };
+
+  global.Skycons = Skycons;
+}(this));
+    </script>
+</body>
+</html>
