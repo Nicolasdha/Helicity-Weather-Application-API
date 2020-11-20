@@ -3,7 +3,7 @@ body {
     padding: 0;
     height: 100%;
     background: linear-gradient(112deg, rgba(46,150,163,1) 0%, rgba(48,62,143,1) 83%);
-    background-color: rgb(48,62,143);
+    background-color:rgba(21, 123, 136, 0.897);
     background-repeat: no-repeat;
     font-family: 'Quicksand', sans-serif;
     color: white;
@@ -125,8 +125,6 @@ body {
         margin: 70px 40px 10px 40px;
     }
 }
-
-
 
 @media screen and (min-width: 1px) and (max-width: 576px)  {
     .icon {
